@@ -1,6 +1,10 @@
-# SSH Config File
-#
-Host web-01
-	User ubuntu
-	PasswordAuthentication no
-	IdentityFile ~/.ssh/school
+#!/usr/bin/env bash
+# ssh config file
+
+Host *
+      PasswordAuthentication no
+      IdentifyFile ~/.ssh/school
+      SendEnv LANG LC_*
+      HashKnownHosts yes
+      GSSAPIAuthentication yes
+      GSSAPIDelegateCredentials no      
