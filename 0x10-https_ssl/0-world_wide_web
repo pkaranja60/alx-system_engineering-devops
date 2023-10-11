@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# Shows information about subdomains.
-domain_information() {
-    local domain="$1"
-    local subdomain="$2"
-    local line
-    line=$(dig "$subdomain"."$domain" | awk '/ANSWER SECTION:/ {getline; print; getline; print}')
-    echo "$subdomain $line" | awk '{printf "The subdomain %s is a %s record and points to %s\n", $1, $2, $3}'
+
+#shellcheck disable=SC2086
+# Information about server domains
+
+check_domain() {
+    # Check for a valid domain
+    SUBDOMAINS=("www"  "lb-01" "web-01" "web-02")
+    if [ -z "$2" ]; then
+	for i in "${SUBDOMAINS[@]}"; do
+	    dig "$i.$1" | grep -A1 'ANSWER SECTION:' | tail -n1 | awk '{split($0, SUBDOMAIN, "."); print "The subdomain " SUBDOMAIN[1] " is a " $4 " record and points to " $5}'
+	done
+    else
+	dig "$2.$1" | grep -A1 'ANSWER SECTION:' | tail -n1 | awk '{split($0, SUBDOMAIN, "."); print "The subdomain " SUBDOMAIN[1] " is a " $4 " record and points to " $5}'
+    fi
 }
-if [ "$#" -eq 1 ]; then
-    domain_information "$1" "www"
-    domain_information "$1" "lb-01"
-    domain_information "$1" "web-01"
-    domain_information "$1" "web-02"
-elif [ "$#" -eq 2 ]; then
-    domain_information "$1" "$2"
-fi
+
+check_domain "$1" "$2"
