@@ -36,7 +36,7 @@ defaults
 
 frontend pkaranja60_front_end
     bind *:80
-    bind *:443 ssl crt /etc/haproxy/certs/www.besthor.tech.pem
+    bind *:443 ssl crt /etc/letsencrypt/live/www.fastwind.tech/fullchain.pem 
     http-request redirect scheme https unless { ssl_fc }
     http-request set-header X-Forwarded-Proto https
     default_backend besthor_back_end
